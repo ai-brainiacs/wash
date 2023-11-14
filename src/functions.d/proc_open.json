@@ -12,34 +12,11 @@
                 "type": "string",
                 "optional": true,
                 "description": "the full path to the desired working directory where the command will be executed"
-            },
-            "env": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "key": {
-                            "type": "string",
-                            "description": "the name of the environment variable"
-                        },
-                        "value": {
-                            "type": "string",
-                            "description": "the value to set for the environment variable"
-                        }
-                    },
-                    "required": [
-                        "key",
-                        "value"
-                    ]
-                },
-                "optional": true,
-                "description": "an array of environment variables to set before running the command"
             }
         },
         "required": [
             "command",
-            "cwd",
-            "env"
+            "cwd"
         ]
     }
 }

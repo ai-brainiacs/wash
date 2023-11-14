@@ -10,20 +10,6 @@ $this->functionHandlers['proc_open'] = function ($args) {
             "stderr" => "Error (ash): Missing required fields (command).",
             "exitCode" => -1,
         ];
-        $env = trim(shell_exec("env | grep -v '^BASH_FUNC_'"));
-        // parse it into key-value pairs
-        $env = explode("\n", $env);
-        $env = array_map(function ($item) {
-            $eq_pos = strpos($item, "=");
-            if ($eq_pos === false) return [];
-            $item0 = substr($item, 0, $eq_pos);
-            $item1 = substr($item, $eq_pos + 1);
-            return [$item0 => $item1];
-        }, $env);
-        $env = array_reduce($env, function ($carry, $item) {
-            return array_merge($carry, $item);
-        }, []);
-        $input['env'] = array_merge($env, $input['env'] ?? []);
         if ($this->ash->debug) echo ("debug: proc_exec() env: " . print_r($input['env'], true) . "\n");
         $descriptorspec = [
             0 => ["pipe", "r"], // stdin
@@ -32,7 +18,7 @@ $this->functionHandlers['proc_open'] = function ($args) {
         ];
         $pipes = [];
         try {
-            $this->runningProcess = proc_open($input['command'], $descriptorspec, $pipes, $input['cwd'] ?? $this->ash->sysInfo->sysInfo['workingDir'], $input['env'] ?? []);
+            $this->runningProcess = proc_open($input['command'], $descriptorspec, $pipes, $input['cwd'] ?? $this->ash->sysInfo->sysInfo['workingDir']);
         } catch (\Exception $e) {
             return [
                 "stdout" => "",
