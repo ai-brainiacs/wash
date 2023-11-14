@@ -14,31 +14,31 @@ class SysInfo
 
     public function refresh()
     {
+        $terminalSize = shell_exec('mode');
+        preg_match('/Lines:\s+(\d+)/', $terminalSize, $lines);
+        preg_match('/Columns:\s+(\d+)/', $terminalSize, $columns);
+
         $this->sysInfo = [
-            'release' => trim(shell_exec("cat /etc/*release*")),
-            'uname-a' => trim(shell_exec("uname -a")),
-            'hostFQDN' => trim(shell_exec("hostname")),
-            'hostName' => trim(shell_exec("hostname -s")),
-            'ipAddr' => trim(shell_exec("ip addr | grep inet")),
-            'etcHosts' => trim(shell_exec("cat /etc/hosts")),
-            'uptime' => trim(shell_exec("uptime")),
-            'free-mh' => trim(shell_exec("free -mh")),
-            'df-h' => trim(shell_exec("df -h")),
-            'failedServices' => trim(shell_exec("systemctl --failed")),
-            'listeningPorts' => trim(shell_exec("ss -tunalp")),
+            'release' => php_uname(),
+            'uname-a' => php_uname('a'),
+            'hostFQDN' => gethostname(),
+            'hostName' => gethostname(),
+            'ram' => round(disk_free_space("/") / 1024 / 1024, 2) . 'M',
+            'disk' => round(disk_total_space("/") / 1024 / 1024, 2) . 'M',
             'emergencyContact' => 'not set',
             'ashEmailAddress' => 'not set',
-            'who-u' => trim(shell_exec("who -u")),
+            'who-u' => get_current_user(),
             'termColorSupport' => $this->ash->config->config['colorSupport'] ? "\e[32myes\e[0m" : "no",
             'termEmojiSupport' => $this->ash->config->config['emojiSupport'] ? "✅" : "no",
-            'terminalLines' => trim(shell_exec("tput lines 2> /dev/null")),
-            'terminalColumns' => trim(shell_exec("tput cols 2> /dev/null")),
-            'currentDate' => trim(shell_exec("date")),
-            'userId' => trim(shell_exec("whoami")),
-            'homeDir' => trim(shell_exec("echo ~")),
-            'lastDir' => isset($this->sysInfo['lastDir']) ? $this->sysInfo['lastDir'] : trim(shell_exec("pwd")),
-            'workingDir' => trim(shell_exec("pwd")),
+            'terminalLines' => $lines[1] ?? "not set",
+            'terminalColumns' => $columns[1] ?? "not set",
+            'currentDate' => trim(shell_exec("date /T") ?? "not set"),
+            'userId' => get_current_user(),
+            'homeDir' => getenv('USERPROFILE'),
+            'lastDir' => isset($this->sysInfo['lastDir']) ? $this->sysInfo['lastDir'] : getcwd(),
+            'workingDir' => getcwd(),
         ];
+
         $this->sysInfo['workingFolder'] = basename($this->sysInfo['workingDir'] == "" ? "/" : basename($this->sysInfo['workingDir']));
         if ($this->sysInfo['workingDir'] == $this->sysInfo['homeDir']) $this->sysInfo['workingFolder'] = "~";
         if ($this->ash->config->config['emailAddress'] != "") $this->sysInfo['emergencyContact'] = $this->ash->config->config['emailAddress'];

@@ -21,7 +21,7 @@ class Commands
                 return "";
             case "clear":
                 $this->ash->openai->history->clearHistory();
-                passthru("clear");
+                passthru("cls");
                 usleep(10000);
                 return "\r";
             case "help":

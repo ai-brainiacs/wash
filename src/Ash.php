@@ -14,8 +14,8 @@ class Ash
     public function __construct()
     {
 
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            echo "Error: This program is for Linux only.\n";
+        if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
+            echo "Error: This program is for Windows only.\n";
             exit(1);
         }
         if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
@@ -41,7 +41,7 @@ class Ash
 
     private function run()
     {
-        pcntl_signal(SIGINT, [$this, "ctrl_c"]);
+        sapi_windows_set_ctrl_handler([$this, "ctrl_c"]);
         while (true) {
             $this->sysInfo->refresh();
             if ($this->config->config['colorSupport']) $prompt = "[" . $this->sysInfo->sysInfo['userId'] . "@" . $this->sysInfo->sysInfo['hostName'] . " " . "\001\e[95m\002" . $this->sysInfo->sysInfo['workingFolder'] . "\001\e[0m\002" . "]# ";

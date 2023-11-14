@@ -38,7 +38,7 @@ class OpenAI
 
     public function welcomeMessage()
     {
-        if (!$this->ash->debug) passthru("clear");
+        if (!$this->ash->debug) passthru("cls");
         $this->history->saveMessage(["role" => "system", "content" => "User started a new ash session from : " . $this->ash->sysInfo->sysInfo["who-u"] . "\n Please greet them!"]);
         $messages = $this->buildPrompt();
         $messages[] = ["role" => "system", "content" => "Run any initial functions you need to then review everything for any potential areas that may need attention, and finally write a short welcome message to the user with a brief assessment of server status/health.\n"];
@@ -226,7 +226,7 @@ class OpenAI
 
     private function getFunctions()
     {
-        exec('ls ' . __DIR__ . '/functions.d/*.json', $functions);
+        $functions = glob(__DIR__ . '/functions.d/*.json');
         $result = [];
         foreach ($functions as $function) {
             $jsonArray = json_decode(file_get_contents($function), true);
