@@ -44,7 +44,7 @@ class Ash
         sapi_windows_set_ctrl_handler([$this, "ctrl_c"]);
         while (true) {
             $this->sysInfo->refresh();
-            if ($this->config->config['colorSupport']) $prompt = "[" . $this->sysInfo->sysInfo['userId'] . "@" . $this->sysInfo->sysInfo['hostName'] . " " . "\001\e[95m\002" . $this->sysInfo->sysInfo['workingFolder'] . "\001\e[0m\002" . "]# ";
+            if ($this->config->config['colorSupport']) $prompt = "[" . $this->sysInfo->sysInfo['userId'] . "@" . $this->sysInfo->sysInfo['hostName'] . " " . "\e[95m" . $this->sysInfo->sysInfo['workingFolder'] . "\e[0m" . "]# ";
             else $prompt = "[{$this->sysInfo->sysInfo['userId']}@{$this->sysInfo->sysInfo['hostName']} {$this->sysInfo->sysInfo['workingFolder']}]# ";
             $input = readline($prompt);
             readline_add_history($input);
