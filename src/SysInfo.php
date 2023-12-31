@@ -32,7 +32,7 @@ class SysInfo
             'termEmojiSupport' => $this->ash->config->config['emojiSupport'] ? "✅" : "no",
             'terminalLines' => $lines[1] ?? "not set",
             'terminalColumns' => $columns[1] ?? "not set",
-            'currentDate' => trim(shell_exec("date /T") ?? "not set"),
+            'currentDate' => date('c'),
             'userId' => get_current_user(),
             'homeDir' => getenv('USERPROFILE'),
             'lastDir' => isset($this->sysInfo['lastDir']) ? $this->sysInfo['lastDir'] : getcwd(),
